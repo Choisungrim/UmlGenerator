@@ -1,0 +1,57 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.10'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'maven-publish' // 추가된 부분
+}
+
+group = 'com.umlgenerator'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation 'org.springframework.boot:spring-boot-starter-web-services'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+	implementation 'com.github.javaparser:javaparser-core:3.24.0'
+	implementation 'org.jsoup:jsoup:1.15.3'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// JAR 설정
+tasks.named('jar') {
+	enabled = true
+	manifest {
+		attributes(
+				'Implementation-Title': project.name,
+				'Implementation-Version': project.version,
+				'Implementation-Vendor': project.group
+		)
+	}
+}
+
+// 라이브러리로 사용할 경우, 다음과 같은 설정도 추가할 수 있습니다.
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			groupId = project.group
+			artifactId = project.name
+			version = project.version
+		}
+	}
+}
